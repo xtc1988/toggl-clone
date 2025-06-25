@@ -7,10 +7,20 @@ export async function updateSession(request: NextRequest) {
       headers: request.headers,
     },
   })
+  
+  // Public paths that don't require authentication
+  const publicPaths = ['/login', '/signup', '/test-env']
+  const isPublicPath = publicPaths.some(path => 
+    request.nextUrl.pathname.startsWith(path)
+  )
+  
+  // During build, environment variables might not be available
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl || 'https://placeholder.supabase.co',
+    supabaseKey || 'placeholder-key',
     {
       cookies: {
         get(name: string) {
@@ -54,7 +64,15 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  await supabase.auth.getUser()
+  // Only check authentication if properly configured and not on public path
+  if (supabaseUrl && supabaseKey && !isPublicPath) {
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    // If no user and trying to access protected route, redirect to login
+    if (!user && !isPublicPath) {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
+  }
 
   return response
 }
