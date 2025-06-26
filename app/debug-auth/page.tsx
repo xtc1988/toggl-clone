@@ -16,7 +16,7 @@ export default function DebugAuthPage() {
     const { data: { user } } = await supabase.auth.getUser()
     const { data: { session } } = await supabase.auth.getSession()
     
-    setDebugInfo(prev => ({
+    setDebugInfo((prev: any) => ({
       ...prev,
       user,
       session,
@@ -26,7 +26,7 @@ export default function DebugAuthPage() {
 
   const testGoogleAuth = async () => {
     setLoading(true)
-    setDebugInfo(prev => ({ ...prev, status: 'Googleログインを開始...' }))
+    setDebugInfo((prev: any) => ({ ...prev, status: 'Googleログインを開始...' }))
     
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
@@ -40,13 +40,13 @@ export default function DebugAuthPage() {
         }
       })
       
-      setDebugInfo(prev => ({
+      setDebugInfo((prev: any) => ({
         ...prev,
         googleAuthResult: { data, error },
         status: error ? 'エラー発生' : 'リダイレクト待機中...'
       }))
     } catch (err) {
-      setDebugInfo(prev => ({
+      setDebugInfo((prev: any) => ({
         ...prev,
         exception: err instanceof Error ? err.message : String(err),
         status: '例外発生'
@@ -60,7 +60,7 @@ export default function DebugAuthPage() {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
     
-    setDebugInfo(prev => ({
+    setDebugInfo((prev: any) => ({
       ...prev,
       config: {
         supabaseUrl: url ? `${url.substring(0, 30)}...` : 'Not set',
