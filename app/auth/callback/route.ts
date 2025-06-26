@@ -1,32 +1,5 @@
 import { createClient } from '@/utils/supabase/server'
 import { NextResponse } from 'next/server'
-import { writeFile, mkdir } from 'fs/promises'
-import { join } from 'path'
-
-async function logToFile(data: any) {
-  try {
-    const logDir = join(process.cwd(), 'logs')
-    const logFile = join(logDir, 'auth-callback.log')
-    
-    // ログディレクトリを作成
-    await mkdir(logDir, { recursive: true })
-    
-    // ログデータを整形
-    const logEntry = {
-      timestamp: new Date().toISOString(),
-      ...data
-    }
-    
-    // ファイルに書き込み
-    await writeFile(
-      logFile, 
-      JSON.stringify(logEntry, null, 2) + '\n\n',
-      { flag: 'a' }
-    )
-  } catch (error) {
-    console.error('Failed to write log:', error)
-  }
-}
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url)
@@ -34,27 +7,23 @@ export async function GET(request: Request) {
   const error = requestUrl.searchParams.get('error')
   const error_description = requestUrl.searchParams.get('error_description')
   
-  // すべてのパラメータをログ
-  const allParams = Object.fromEntries(requestUrl.searchParams.entries())
-  
-  await logToFile({
-    event: 'auth_callback_received',
-    url: request.url,
-    params: allParams,
-    headers: Object.fromEntries(request.headers.entries()),
-    code: code ? 'received' : 'missing',
-    error,
-    error_description
-  })
+  // デバッグ用：すべてのパラメータをコンソールに出力
+  console.log('=== Auth Callback Debug ===')
+  console.log('URL:', request.url)
+  console.log('All params:', Object.fromEntries(requestUrl.searchParams.entries()))
+  console.log('Code:', code ? 'received' : 'missing')
+  console.log('Error:', error)
+  console.log('Error Description:', error_description)
 
   if (error) {
     console.error('Auth error:', error, error_description)
-    await logToFile({
-      event: 'auth_error',
-      error,
-      error_description
-    })
-    return NextResponse.redirect(new URL(`/login?error=${error}`, request.url))
+    // エラー詳細をURLパラメータで渡す
+    const errorUrl = new URL('/login', request.url)
+    errorUrl.searchParams.set('error', error)
+    if (error_description) {
+      errorUrl.searchParams.set('error_description', error_description)
+    }
+    return NextResponse.redirect(errorUrl)
   }
 
   if (code) {
@@ -64,35 +33,25 @@ export async function GET(request: Request) {
       
       const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
       
-      await logToFile({
-        event: 'code_exchange',
-        success: !exchangeError,
-        error: exchangeError?.message,
-        user: data?.user?.email
-      })
-      
       if (exchangeError) {
         console.error('Exchange error:', exchangeError)
-        return NextResponse.redirect(new URL(`/login?error=exchange_failed`, request.url))
+        const errorUrl = new URL('/login', request.url)
+        errorUrl.searchParams.set('error', 'exchange_failed')
+        errorUrl.searchParams.set('error_description', exchangeError.message)
+        return NextResponse.redirect(errorUrl)
       }
       
-      console.log('Session created successfully')
+      console.log('Session created successfully for user:', data?.user?.email)
+      return NextResponse.redirect(new URL('/dashboard', request.url))
     } catch (error) {
-      console.error('Callback error:', error)
-      await logToFile({
-        event: 'callback_exception',
-        error: error instanceof Error ? error.message : String(error)
-      })
-      return NextResponse.redirect(new URL('/login?error=callback_failed', request.url))
+      console.error('Callback exception:', error)
+      const errorUrl = new URL('/login', request.url)
+      errorUrl.searchParams.set('error', 'callback_failed')
+      errorUrl.searchParams.set('error_description', error instanceof Error ? error.message : 'Unknown error')
+      return NextResponse.redirect(errorUrl)
     }
-  } else {
-    await logToFile({
-      event: 'no_code_received',
-      params: allParams
-    })
   }
 
-  // URL to redirect to after sign in process completes
-  console.log('Redirecting to dashboard...')
-  return NextResponse.redirect(new URL('/dashboard', request.url))
+  console.log('No code received, redirecting to login')
+  return NextResponse.redirect(new URL('/login?error=no_code', request.url))
 }

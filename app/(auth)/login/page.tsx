@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
@@ -14,6 +14,27 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const supabase = createClient()
+  
+  // URLパラメータからエラーを取得
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const errorParam = params.get('error')
+    const errorDesc = params.get('error_description')
+    
+    if (errorParam) {
+      let errorMessage = 'ログインに失敗しました: '
+      if (errorParam === 'no_code') {
+        errorMessage += '認証コードが受信されませんでした'
+      } else if (errorParam === 'exchange_failed') {
+        errorMessage += errorDesc || 'セッションの作成に失敗しました'
+      } else if (errorParam === 'callback_failed') {
+        errorMessage += errorDesc || '認証処理中にエラーが発生しました'
+      } else {
+        errorMessage += errorDesc || errorParam
+      }
+      setError(errorMessage)
+    }
+  }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
