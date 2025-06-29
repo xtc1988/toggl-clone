@@ -1,6 +1,8 @@
 import { createClient } from '@/utils/supabase/server'
 import { NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+
 // ログをメモリAPIに送信する関数
 async function sendLog(logData: any) {
   try {
