@@ -1,6 +1,6 @@
 // バージョン情報
 export const VERSION_INFO = {
-  version: '3.0.0',
-  lastUpdated: '2025-06-29 21:30:00 JST',
-  description: '公式ドキュメント準拠の完全再実装版'
+  version: '3.1.0',
+  lastUpdated: '2025-06-29 21:45:00 JST',
+  description: 'Togglライクな美しいダッシュボード'
 } as const
