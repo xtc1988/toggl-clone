@@ -1,7 +1,15 @@
+import { VERSION_INFO } from '@/utils/version'
+
 export default function DashboardPage() {
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">ダッシュボード</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">ダッシュボード</h1>
+        <div className="text-xs text-gray-400 text-right">
+          <div>v{VERSION_INFO.version}</div>
+          <div>{VERSION_INFO.lastUpdated}</div>
+        </div>
+      </div>
       
       {/* 統計カード */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
+import { VERSION_INFO } from '@/utils/version'
 
 export const dynamic = 'force-dynamic'
 
@@ -12,6 +13,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [debugInfo, setDebugInfo] = useState<string[]>([])
   const router = useRouter()
   const supabase = createClient()
   
@@ -81,14 +83,73 @@ export default function LoginPage() {
         <button
           type="button"
           onClick={async () => {
-            const { error } = await supabase.auth.signInWithOAuth({
-              provider: 'google',
-              options: {
-                redirectTo: `${window.location.origin}/auth/callback`
-              }
+            const timestamp = new Date().toISOString()
+            const debugMsg = `[${timestamp}] Googleログインボタンクリック`
+            setDebugInfo(prev => [...prev, debugMsg])
+            
+            console.log('Googleログインボタンクリック')
+            console.log('Current origin:', window.location.origin)
+            console.log('Redirect URL:', `${window.location.origin}/auth/callback`)
+            
+            // APIにログを送信
+            try {
+              await fetch('/api/auth-logs', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  event: 'google_login_clicked',
+                  origin: window.location.origin,
+                  redirectUrl: `${window.location.origin}/auth/callback`,
+                  timestamp: new Date().toISOString()
+                })
+              })
+            } catch (e) {
+              console.error('Failed to send log:', e)
+            }
+            
+            const { data, error } = await supabase.auth.signInWithOAuth({
+              provider: 'google'
             })
+            
             if (error) {
-              setError(error.message)
+              console.error('OAuth error:', error)
+              setError(`Google認証エラー: ${error.message}`)
+              setDebugInfo(prev => [...prev, `[${new Date().toISOString()}] OAuth Error: ${error.message}`])
+              
+              // エラーログを送信
+              try {
+                await fetch('/api/auth-logs', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    event: 'google_login_error',
+                    error: error.message,
+                    errorDetails: error,
+                    timestamp: new Date().toISOString()
+                  })
+                })
+              } catch (e) {
+                console.error('Failed to send error log:', e)
+              }
+            } else {
+              console.log('OAuth initiated successfully:', data)
+              setDebugInfo(prev => [...prev, `[${new Date().toISOString()}] OAuth initiated - Redirecting to Google...`])
+              
+              // 成功ログを送信
+              try {
+                await fetch('/api/auth-logs', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    event: 'google_login_initiated',
+                    url: data?.url,
+                    provider: data?.provider,
+                    timestamp: new Date().toISOString()
+                  })
+                })
+              } catch (e) {
+                console.error('Failed to send success log:', e)
+              }
             }
           }}
           className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -183,6 +244,43 @@ export default function LoginPage() {
           </button>
         </div>
       </form>
+      
+      {/* デバッグ情報表示 */}
+      {debugInfo.length > 0 && (
+        <div className="mt-8 p-4 bg-gray-100 rounded-md">
+          <h3 className="text-sm font-medium text-gray-700 mb-2">デバッグ情報:</h3>
+          <div className="space-y-1">
+            {debugInfo.map((info, index) => (
+              <div key={index} className="text-xs text-gray-600 font-mono">
+                {info}
+              </div>
+            ))}
+          </div>
+          <div className="mt-3 space-x-2">
+            <a
+              href="/view-auth-logs"
+              className="text-xs text-blue-600 hover:text-blue-500 underline"
+            >
+              認証ログを表示
+            </a>
+            <button
+              onClick={() => setDebugInfo([])}
+              className="text-xs text-gray-500 hover:text-gray-700 underline"
+            >
+              クリア
+            </button>
+          </div>
+        </div>
+      )}
+      
+      {/* バージョン情報 */}
+      <div className="mt-8 text-center">
+        <div className="text-xs text-gray-400 space-y-1">
+          <div>Version: {VERSION_INFO.version}</div>
+          <div>Updated: {VERSION_INFO.lastUpdated}</div>
+          <div className="text-gray-500">{VERSION_INFO.description}</div>
+        </div>
+      </div>
     </div>
   )
 }

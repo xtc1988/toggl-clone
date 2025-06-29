@@ -21,18 +21,19 @@ async function sendLog(logData: any) {
 }
 
 export async function GET(request: Request) {
-  const requestUrl = new URL(request.url)
-  const code = requestUrl.searchParams.get('code')
-  const error = requestUrl.searchParams.get('error')
-  const error_description = requestUrl.searchParams.get('error_description')
-  
-  // デバッグ用：すべてのパラメータをコンソールに出力
-  console.log('=== Auth Callback Debug ===')
-  console.log('URL:', request.url)
-  console.log('All params:', Object.fromEntries(requestUrl.searchParams.entries()))
-  console.log('Code:', code ? 'received' : 'missing')
-  console.log('Error:', error)
-  console.log('Error Description:', error_description)
+  try {
+    const requestUrl = new URL(request.url)
+    const code = requestUrl.searchParams.get('code')
+    const error = requestUrl.searchParams.get('error')
+    const error_description = requestUrl.searchParams.get('error_description')
+    
+    // デバッグ用：すべてのパラメータをコンソールに出力
+    console.log('=== Auth Callback Debug ===')
+    console.log('URL:', request.url)
+    console.log('All params:', Object.fromEntries(requestUrl.searchParams.entries()))
+    console.log('Code:', code ? 'received' : 'missing')
+    console.log('Error:', error)
+    console.log('Error Description:', error_description)
   
   // 初期ログ：コールバック受信
   await sendLog({
@@ -66,8 +67,8 @@ export async function GET(request: Request) {
 
   if (code) {
     try {
-      const supabase = await createClient()
       console.log('Exchanging code for session...')
+      const supabase = await createClient()
       
       // コード交換開始ログ
       await sendLog({
@@ -97,6 +98,10 @@ export async function GET(request: Request) {
       
       console.log('Session created successfully for user:', data?.user?.email)
       
+      // セッション設定後にユーザー情報を再確認
+      const { data: { user: currentUser } } = await supabase.auth.getUser()
+      console.log('Current user after session exchange:', currentUser?.email)
+      
       // 成功ログ
       await sendLog({
         event: 'auth_success',
@@ -104,10 +109,37 @@ export async function GET(request: Request) {
         userId: data?.user?.id,
         provider: data?.user?.app_metadata?.provider,
         sessionCreated: !!data?.session,
+        currentUserAfterExchange: currentUser?.email,
         action: 'redirecting_to_dashboard'
       })
       
-      return NextResponse.redirect(new URL('/dashboard', request.url))
+      // レスポンスを作成してCookieを確実に設定
+      const response = NextResponse.redirect(new URL('/dashboard', request.url))
+      
+      // セッションが確実に設定されるようにCookieを明示的に設定
+      if (data?.session) {
+        console.log('Setting session cookies explicitly')
+        // アクセストークンとリフレッシュトークンを設定
+        response.cookies.set('sb-access-token', data.session.access_token, {
+          path: '/',
+          maxAge: data.session.expires_in,
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax'
+        })
+        
+        if (data.session.refresh_token) {
+          response.cookies.set('sb-refresh-token', data.session.refresh_token, {
+            path: '/',
+            maxAge: 60 * 60 * 24 * 30, // 30日
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax'
+          })
+        }
+      }
+      
+      return response
     } catch (error) {
       console.error('Callback exception:', error)
       
@@ -127,7 +159,26 @@ export async function GET(request: Request) {
     }
   }
 
-  console.log('No code received, redirecting to login')
+  console.log('No code received, checking if user is already authenticated')
+  
+  // ユーザーが既に認証されているかチェック
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    if (user) {
+      console.log('User already authenticated, redirecting to dashboard')
+      await sendLog({
+        event: 'user_already_authenticated',
+        userId: user.id,
+        userEmail: user.email,
+        action: 'redirecting_to_dashboard'
+      })
+      return NextResponse.redirect(new URL('/dashboard', request.url))
+    }
+  } catch (e) {
+    console.error('Error checking user session:', e)
+  }
   
   // コードなしログ
   await sendLog({
@@ -136,5 +187,14 @@ export async function GET(request: Request) {
     action: 'redirecting_to_login_with_error'
   })
   
-  return NextResponse.redirect(new URL('/login?error=no_code', request.url))
+    return NextResponse.redirect(new URL('/login?error=no_code', request.url))
+  } catch (error) {
+    console.error('Callback route error:', error)
+    await sendLog({
+      event: 'callback_route_error',
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    })
+    return NextResponse.redirect(new URL('/login?error=callback_error', request.url))
+  }
 }
