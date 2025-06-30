@@ -54,223 +54,193 @@ export default function DashboardPage() {
     setIsRunning(!isRunning)
   }
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>
+  const handleSignOut = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    redirect('/login')
+  }
+
+  if (loading) return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+    </div>
+  )
 
   return (
-    <div className="min-h-screen bg-[#FAFBFC]">
-      {/* Header - 高さ50px固定 */}
-      <header className="h-[50px] bg-white border-b border-gray-200 flex items-center px-[16px]">
-        <div className="flex items-center justify-between w-full">
-          <div className="flex items-center">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
+      {/* Modern Navigation */}
+      <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <div className="font-medium text-[16px] mr-[32px] text-gray-900">Toggl Track</div>
-            
-            {/* Navigation */}
-            <nav className="flex items-center space-x-[24px] text-[13px]">
-              <a href="#" className="text-gray-900 font-medium">Timer</a>
-              <a href="#" className="text-gray-600 hover:text-gray-900">Reports</a>
-              <a href="#" className="text-gray-600 hover:text-gray-900">Insights</a>
-              <a href="#" className="text-gray-600 hover:text-gray-900">Projects</a>
-              <a href="#" className="text-gray-600 hover:text-gray-900">Clients</a>
-              <a href="#" className="text-gray-600 hover:text-gray-900">Team</a>
-              <a href="#" className="text-gray-600 hover:text-gray-900">Tags</a>
-              <a href="#" className="text-gray-600 hover:text-gray-900">Settings</a>
-            </nav>
-          </div>
-          
-          {/* Right side */}
-          <div className="flex items-center space-x-[8px]">
-            <button className="p-[6px] hover:bg-gray-100 rounded">
-              <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
-            </button>
-            <button className="p-[6px] hover:bg-gray-100 rounded">
-              <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </button>
-            <div className="flex items-center ml-[8px]">
-              <div className="w-[28px] h-[28px] bg-purple-500 rounded-full flex items-center justify-center text-white text-[12px] font-medium">
-                {user?.email?.[0]?.toUpperCase()}
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Timer Bar - 高さ66px固定 */}
-      <div className="h-[66px] bg-white border-b border-gray-200 px-[16px] flex items-center">
-        <div className="flex items-center justify-between w-full">
-          <div className="flex items-center flex-1">
-            {/* Task input */}
-            <input
-              type="text"
-              value={taskName}
-              onChange={(e) => setTaskName(e.target.value)}
-              placeholder="What are you working on?"
-              className="flex-1 h-[36px] px-[12px] text-[14px] border-0 outline-none placeholder-gray-400 bg-transparent"
-            />
-            
-            {/* Project selector */}
-            <button className="h-[36px] px-[8px] flex items-center space-x-[4px] hover:bg-gray-50 text-gray-600 rounded">
-              <svg className="w-[14px] h-[14px]" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 2a1 1 0 00-1 1v1a1 1 0 002 0V3a1 1 0 00-1-1zM4 4h3a3 3 0 006 0h3a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm2.5 7a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm2.45 4a2.5 2.5 0 10-4.9 0h4.9zM12 9a1 1 0 100 2h3a1 1 0 100-2h-3zm-1 4a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z" clipRule="evenodd" />
-              </svg>
-              <span className="text-[13px]">+ Project</span>
-            </button>
-
-            {/* Tag button */}
-            <button className="h-[36px] w-[36px] flex items-center justify-center hover:bg-gray-50 text-gray-400 rounded ml-[4px]">
-              <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-              </svg>
-            </button>
-
-            {/* Billable button */}
-            <button className="h-[36px] w-[36px] flex items-center justify-center hover:bg-gray-50 text-gray-400 rounded ml-[4px]">
-              <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Timer and controls */}
-          <div className="flex items-center space-x-[12px]">
-            <span className="text-[20px] font-mono text-gray-800 min-w-[80px] text-right">{time}</span>
-            
-            <button
-              onClick={handleStartStop}
-              className={`h-[36px] px-[16px] rounded-[4px] font-medium text-[12px] uppercase tracking-wider transition-all ${
-                isRunning 
-                  ? 'bg-red-500 hover:bg-red-600 text-white' 
-                  : 'bg-[#E01B22] hover:bg-[#C51920] text-white'
-              }`}
-            >
-              {isRunning ? 'Stop' : 'Start'}
-            </button>
-
-            <button className="h-[36px] w-[36px] flex items-center justify-center hover:bg-gray-50 text-gray-400 rounded">
-              <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </button>
-
-            <button className="h-[36px] w-[36px] flex items-center justify-center hover:bg-gray-50 text-gray-400 rounded">
-              <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="flex" style={{ height: 'calc(100vh - 116px)' }}>
-        {/* Left Sidebar - 幅 220px 固定 */}
-        <aside className="w-[220px] bg-[#F6F8FA] border-r border-gray-200 p-[16px] relative">
-          <div className="space-y-[24px]">
-            <div>
-              <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-[8px]">ANALYZE</h3>
-              <nav className="space-y-[2px]">
-                <a href="#" className="block px-[8px] py-[6px] text-[13px] text-gray-700 hover:bg-gray-200 rounded">Reports</a>
-                <a href="#" className="block px-[8px] py-[6px] text-[13px] text-gray-700 hover:bg-gray-200 rounded">Insights</a>
-              </nav>
-            </div>
-            
-            <div>
-              <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-[8px]">MANAGE</h3>
-              <nav className="space-y-[2px]">
-                <a href="#" className="block px-[8px] py-[6px] text-[13px] text-gray-700 hover:bg-gray-200 rounded">Projects</a>
-                <a href="#" className="block px-[8px] py-[6px] text-[13px] text-gray-700 hover:bg-gray-200 rounded">Clients</a>
-                <a href="#" className="block px-[8px] py-[6px] text-[13px] text-gray-700 hover:bg-gray-200 rounded">Team</a>
-                <a href="#" className="block px-[8px] py-[6px] text-[13px] text-gray-700 hover:bg-gray-200 rounded">Tags</a>
-                <a href="#" className="block px-[8px] py-[6px] text-[13px] text-gray-700 hover:bg-gray-200 rounded">Help</a>
-              </nav>
-            </div>
-
-            <div>
-              <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-[8px]">WORKSPACE</h3>
-              <div className="px-[8px] py-[6px] text-[13px] text-gray-700 truncate">
-                {user?.email}
-              </div>
-            </div>
-          </div>
-
-          {/* Sign out at bottom */}
-          <form action="/auth/signout" method="post" className="absolute bottom-[16px] left-[16px] right-[16px]">
-            <button 
-              type="submit"
-              className="w-full text-left px-[8px] py-[6px] text-[13px] text-gray-700 hover:bg-gray-200 rounded"
-            >
-              Sign out
-            </button>
-          </form>
-        </aside>
-
-        {/* Main Content */}
-        <main className="flex-1 overflow-y-auto">
-          <div className="p-[20px]">
-            {/* Date Navigation */}
-            <div className="flex items-center justify-between mb-[20px]">
-              <div className="flex items-center space-x-[12px]">
-                <button className="p-[4px] hover:bg-gray-200 rounded">
-                  <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <div className="flex items-center space-x-8">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                </button>
-                <h2 className="text-[16px] font-medium text-gray-900">Today</h2>
-                <span className="text-[13px] text-gray-500">Sun, 30 Jun</span>
-                <button className="p-[4px] hover:bg-gray-200 rounded">
-                  <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">TimeTracker</span>
               </div>
               
-              <div className="flex items-center space-x-[8px]">
-                <span className="text-[13px] text-gray-500">Total:</span>
-                <span className="text-[16px] font-medium text-gray-900">00:00:00</span>
+              {/* Navigation Links */}
+              <div className="hidden md:flex items-center space-x-1">
+                <a href="#" className="px-3 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg">Timer</a>
+                <a href="#" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">Analytics</a>
+                <a href="#" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">Projects</a>
+                <a href="#" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">Team</a>
               </div>
             </div>
 
-            {/* Time Entries */}
-            <div className="space-y-[8px]">
-              {/* Empty state */}
-              <div className="bg-white rounded-[6px] border border-gray-200 p-[32px] text-center">
-                <div className="max-w-md mx-auto">
-                  <svg className="w-[48px] h-[48px] mx-auto mb-[16px] text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            {/* User Menu */}
+            <div className="flex items-center space-x-4">
+              <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM11 19H7a2 2 0 01-2-2V7a2 2 0 012-2h4m0 14v-5a2 2 0 012-2h2" />
+                </svg>
+              </button>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm font-medium">{user?.email?.[0]?.toUpperCase()}</span>
+                </div>
+                <button 
+                  onClick={handleSignOut}
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  Sign out
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        {/* Timer Section */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200/50 p-8 mb-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+              {/* Task Input */}
+              <div className="flex-1 w-full lg:w-auto">
+                <input
+                  type="text"
+                  value={taskName}
+                  onChange={(e) => setTaskName(e.target.value)}
+                  placeholder="What are you working on today?"
+                  className="w-full text-lg px-0 py-3 border-0 border-b border-gray-200 focus:border-indigo-500 focus:ring-0 bg-transparent placeholder-gray-400 transition-colors"
+                />
+              </div>
+              
+              {/* Timer Display & Controls */}
+              <div className="flex items-center space-x-6">
+                <div className="text-4xl font-mono font-bold text-gray-900 min-w-[180px] text-center">
+                  {time}
+                </div>
+                
+                <button
+                  onClick={handleStartStop}
+                  className={`relative px-8 py-4 rounded-xl font-semibold text-white transition-all duration-200 transform hover:scale-105 ${
+                    isRunning 
+                      ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-lg shadow-red-500/25' 
+                      : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg shadow-indigo-500/25'
+                  }`}
+                >
+                  <div className="flex items-center space-x-2">
+                    {isRunning ? (
+                      <>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 10h6v4H9z" />
+                        </svg>
+                        <span>Stop</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M15 14h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Start</span>
+                      </>
+                    )}
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Dashboard Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Today's Summary */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200/50 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-gray-900">Today's Activity</h2>
+                <div className="flex items-center space-x-2 text-sm text-gray-500">
+                  <span>Total:</span>
+                  <span className="font-semibold text-gray-900">00:00:00</span>
+                </div>
+              </div>
+              
+              {/* Empty State */}
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <h3 className="text-[16px] font-medium text-gray-900 mb-[8px]">No time entries yet</h3>
-                  <p className="text-[13px] text-gray-500">
-                    When you track time it will appear here.
-                  </p>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Ready to start tracking?</h3>
+                <p className="text-gray-500 mb-4">Your time entries will appear here once you start the timer.</p>
+                <button 
+                  onClick={handleStartStop}
+                  className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+                >
+                  Start your first timer
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Quick Stats */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200/50 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Stats</h3>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600">This Week</span>
+                  <span className="font-semibold text-gray-900">0h 0m</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600">This Month</span>
+                  <span className="font-semibold text-gray-900">0h 0m</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600">Projects</span>
+                  <span className="font-semibold text-gray-900">0</span>
                 </div>
               </div>
             </div>
-          </div>
-        </main>
 
-        {/* Right Sidebar - Calendar */}
-        <aside className="w-[280px] bg-white border-l border-gray-200 p-[16px]">
-          <div className="text-[14px] font-medium mb-[16px] text-gray-900">June 2025</div>
-          {/* Calendar would go here */}
-          <div className="grid grid-cols-7 gap-[4px] text-[11px] text-center">
-            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
-              <div key={i} className="py-[4px] text-gray-500 font-medium">{day}</div>
-            ))}
-            {Array.from({ length: 30 }, (_, i) => (
-              <div key={i} className={`py-[4px] ${i === 29 ? 'bg-red-50 text-red-600 font-medium rounded' : 'text-gray-700 hover:bg-gray-50 rounded cursor-pointer'}`}>
-                {i + 1}
+            {/* Recent Projects */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200/50 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Projects</h3>
+              <div className="text-center py-8">
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                </div>
+                <p className="text-gray-500 text-sm">No projects yet</p>
               </div>
-            ))}
+            </div>
           </div>
-        </aside>
-      </div>
+        </div>
+      </main>
 
       {/* Version Info */}
-      <div className="fixed bottom-[16px] right-[16px] bg-white rounded shadow-lg p-[8px] text-[11px] text-gray-500">
+      <div className="fixed bottom-4 right-4 bg-white/80 backdrop-blur-sm rounded-lg shadow-lg px-3 py-2 text-xs text-gray-500">
         v{VERSION_INFO.version}
       </div>
     </div>
