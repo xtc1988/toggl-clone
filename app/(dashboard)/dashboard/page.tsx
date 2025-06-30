@@ -241,7 +241,9 @@ export default function DashboardPage() {
 
       {/* Version Info */}
       <div className="fixed bottom-4 right-4 bg-white/80 backdrop-blur-sm rounded-lg shadow-lg px-3 py-2 text-xs text-gray-500">
-        v{VERSION_INFO.version}
+        <div>v{VERSION_INFO.version}</div>
+        <div className="text-[10px] text-gray-400">{VERSION_INFO.lastUpdated}</div>
+        <div className="text-[10px] text-gray-400">{VERSION_INFO.description}</div>
       </div>
     </div>
   )
