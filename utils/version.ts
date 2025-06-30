@@ -1,6 +1,6 @@
 // バージョン情報
 export const VERSION_INFO = {
-  version: '6.0.0',
-  lastUpdated: '2025-06-30 01:45:00 JST',
-  description: 'GitHub風コンパクトレイアウト'
+  version: '7.0.0',
+  lastUpdated: '2025-06-30 02:00:00 JST',
+  description: 'GitHub完全コピーデザイン'
 } as const
