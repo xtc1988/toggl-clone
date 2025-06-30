@@ -59,14 +59,14 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-[#FAFBFC]">
       {/* Header - 高さ50px固定 */}
-      <header className="h-[50px] bg-white border-b border-gray-200 flex items-center px-4">
+      <header className="h-[50px] bg-white border-b border-gray-200 flex items-center px-[16px]">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center">
             {/* Logo */}
-            <div className="font-bold text-xl mr-8">Toggl Track</div>
+            <div className="font-medium text-[16px] mr-[32px] text-gray-900">Toggl Track</div>
             
             {/* Navigation */}
-            <nav className="flex items-center space-x-6 text-sm">
+            <nav className="flex items-center space-x-[24px] text-[13px]">
               <a href="#" className="text-gray-900 font-medium">Timer</a>
               <a href="#" className="text-gray-600 hover:text-gray-900">Reports</a>
               <a href="#" className="text-gray-600 hover:text-gray-900">Insights</a>
@@ -79,19 +79,19 @@ export default function DashboardPage() {
           </div>
           
           {/* Right side */}
-          <div className="flex items-center space-x-4">
-            <button className="p-2 hover:bg-gray-100 rounded">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="flex items-center space-x-[8px]">
+            <button className="p-[6px] hover:bg-gray-100 rounded">
+              <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
             </button>
-            <button className="p-2 hover:bg-gray-100 rounded">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button className="p-[6px] hover:bg-gray-100 rounded">
+              <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm">
+            <div className="flex items-center ml-[8px]">
+              <div className="w-[28px] h-[28px] bg-purple-500 rounded-full flex items-center justify-center text-white text-[12px] font-medium">
                 {user?.email?.[0]?.toUpperCase()}
               </div>
             </div>
@@ -100,8 +100,8 @@ export default function DashboardPage() {
       </header>
 
       {/* Timer Bar - 高さ66px固定 */}
-      <div className="h-[66px] bg-white border-b border-gray-200 px-4 flex items-center">
-        <div className="flex items-center justify-between w-full max-w-[1200px] mx-auto">
+      <div className="h-[66px] bg-white border-b border-gray-200 px-[16px] flex items-center">
+        <div className="flex items-center justify-between w-full">
           <div className="flex items-center flex-1">
             {/* Task input */}
             <input
@@ -109,39 +109,39 @@ export default function DashboardPage() {
               value={taskName}
               onChange={(e) => setTaskName(e.target.value)}
               placeholder="What are you working on?"
-              className="flex-1 h-[40px] px-3 text-[15px] border-0 outline-none placeholder-gray-400"
+              className="flex-1 h-[36px] px-[12px] text-[14px] border-0 outline-none placeholder-gray-400 bg-transparent"
             />
             
             {/* Project selector */}
-            <button className="h-[40px] px-3 flex items-center space-x-2 hover:bg-gray-50 text-gray-600">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <button className="h-[36px] px-[8px] flex items-center space-x-[4px] hover:bg-gray-50 text-gray-600 rounded">
+              <svg className="w-[14px] h-[14px]" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 2a1 1 0 00-1 1v1a1 1 0 002 0V3a1 1 0 00-1-1zM4 4h3a3 3 0 006 0h3a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm2.5 7a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm2.45 4a2.5 2.5 0 10-4.9 0h4.9zM12 9a1 1 0 100 2h3a1 1 0 100-2h-3zm-1 4a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z" clipRule="evenodd" />
               </svg>
-              <span className="text-sm">+ Project</span>
+              <span className="text-[13px]">+ Project</span>
             </button>
 
             {/* Tag button */}
-            <button className="h-[40px] w-[40px] flex items-center justify-center hover:bg-gray-50 text-gray-400">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button className="h-[36px] w-[36px] flex items-center justify-center hover:bg-gray-50 text-gray-400 rounded ml-[4px]">
+              <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
               </svg>
             </button>
 
             {/* Billable button */}
-            <button className="h-[40px] w-[40px] flex items-center justify-center hover:bg-gray-50 text-gray-400">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button className="h-[36px] w-[36px] flex items-center justify-center hover:bg-gray-50 text-gray-400 rounded ml-[4px]">
+              <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </button>
           </div>
 
           {/* Timer and controls */}
-          <div className="flex items-center space-x-4">
-            <span className="text-[24px] font-mono text-gray-800">{time}</span>
+          <div className="flex items-center space-x-[12px]">
+            <span className="text-[20px] font-mono text-gray-800 min-w-[80px] text-right">{time}</span>
             
             <button
               onClick={handleStartStop}
-              className={`h-[40px] px-6 rounded font-medium text-sm uppercase tracking-wider transition-all ${
+              className={`h-[36px] px-[16px] rounded-[4px] font-medium text-[12px] uppercase tracking-wider transition-all ${
                 isRunning 
                   ? 'bg-red-500 hover:bg-red-600 text-white' 
                   : 'bg-[#E01B22] hover:bg-[#C51920] text-white'
@@ -150,14 +150,14 @@ export default function DashboardPage() {
               {isRunning ? 'Stop' : 'Start'}
             </button>
 
-            <button className="h-[40px] w-[40px] flex items-center justify-center hover:bg-gray-50 text-gray-400">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button className="h-[36px] w-[36px] flex items-center justify-center hover:bg-gray-50 text-gray-400 rounded">
+              <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </button>
 
-            <button className="h-[40px] w-[40px] flex items-center justify-center hover:bg-gray-50 text-gray-400">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button className="h-[36px] w-[36px] flex items-center justify-center hover:bg-gray-50 text-gray-400 rounded">
+              <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
               </svg>
             </button>
@@ -168,40 +168,40 @@ export default function DashboardPage() {
       {/* Main Content Area */}
       <div className="flex" style={{ height: 'calc(100vh - 116px)' }}>
         {/* Left Sidebar - 幅 220px 固定 */}
-        <aside className="w-[220px] bg-[#F6F8FA] border-r border-gray-200 p-4">
-          <div className="space-y-6">
+        <aside className="w-[220px] bg-[#F6F8FA] border-r border-gray-200 p-[16px] relative">
+          <div className="space-y-[24px]">
             <div>
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Analyze</h3>
-              <nav className="space-y-1">
-                <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded">Reports</a>
-                <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded">Insights</a>
+              <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-[8px]">ANALYZE</h3>
+              <nav className="space-y-[2px]">
+                <a href="#" className="block px-[8px] py-[6px] text-[13px] text-gray-700 hover:bg-gray-200 rounded">Reports</a>
+                <a href="#" className="block px-[8px] py-[6px] text-[13px] text-gray-700 hover:bg-gray-200 rounded">Insights</a>
               </nav>
             </div>
             
             <div>
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Manage</h3>
-              <nav className="space-y-1">
-                <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded">Projects</a>
-                <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded">Clients</a>
-                <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded">Team</a>
-                <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded">Tags</a>
-                <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded">Help</a>
+              <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-[8px]">MANAGE</h3>
+              <nav className="space-y-[2px]">
+                <a href="#" className="block px-[8px] py-[6px] text-[13px] text-gray-700 hover:bg-gray-200 rounded">Projects</a>
+                <a href="#" className="block px-[8px] py-[6px] text-[13px] text-gray-700 hover:bg-gray-200 rounded">Clients</a>
+                <a href="#" className="block px-[8px] py-[6px] text-[13px] text-gray-700 hover:bg-gray-200 rounded">Team</a>
+                <a href="#" className="block px-[8px] py-[6px] text-[13px] text-gray-700 hover:bg-gray-200 rounded">Tags</a>
+                <a href="#" className="block px-[8px] py-[6px] text-[13px] text-gray-700 hover:bg-gray-200 rounded">Help</a>
               </nav>
             </div>
 
             <div>
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Workspace</h3>
-              <div className="px-3 py-2 text-sm text-gray-700">
+              <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-[8px]">WORKSPACE</h3>
+              <div className="px-[8px] py-[6px] text-[13px] text-gray-700 truncate">
                 {user?.email}
               </div>
             </div>
           </div>
 
           {/* Sign out at bottom */}
-          <form action="/auth/signout" method="post" className="absolute bottom-4 left-4 right-4">
+          <form action="/auth/signout" method="post" className="absolute bottom-[16px] left-[16px] right-[16px]">
             <button 
               type="submit"
-              className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded"
+              className="w-full text-left px-[8px] py-[6px] text-[13px] text-gray-700 hover:bg-gray-200 rounded"
             >
               Sign out
             </button>
@@ -210,40 +210,40 @@ export default function DashboardPage() {
 
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto">
-          <div className="p-6">
+          <div className="p-[20px]">
             {/* Date Navigation */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-4">
-                <button className="p-1 hover:bg-gray-200 rounded">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center justify-between mb-[20px]">
+              <div className="flex items-center space-x-[12px]">
+                <button className="p-[4px] hover:bg-gray-200 rounded">
+                  <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
-                <h2 className="text-lg font-medium">Today</h2>
-                <span className="text-sm text-gray-500">Sun, 30 Jun</span>
-                <button className="p-1 hover:bg-gray-200 rounded">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <h2 className="text-[16px] font-medium text-gray-900">Today</h2>
+                <span className="text-[13px] text-gray-500">Sun, 30 Jun</span>
+                <button className="p-[4px] hover:bg-gray-200 rounded">
+                  <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </button>
               </div>
               
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-500">Total:</span>
-                <span className="text-lg font-medium">00:00:00</span>
+              <div className="flex items-center space-x-[8px]">
+                <span className="text-[13px] text-gray-500">Total:</span>
+                <span className="text-[16px] font-medium text-gray-900">00:00:00</span>
               </div>
             </div>
 
             {/* Time Entries */}
-            <div className="space-y-2">
+            <div className="space-y-[8px]">
               {/* Empty state */}
-              <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
+              <div className="bg-white rounded-[6px] border border-gray-200 p-[32px] text-center">
                 <div className="max-w-md mx-auto">
-                  <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-[48px] h-[48px] mx-auto mb-[16px] text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No time entries yet</h3>
-                  <p className="text-sm text-gray-500">
+                  <h3 className="text-[16px] font-medium text-gray-900 mb-[8px]">No time entries yet</h3>
+                  <p className="text-[13px] text-gray-500">
                     When you track time it will appear here.
                   </p>
                 </div>
@@ -253,15 +253,15 @@ export default function DashboardPage() {
         </main>
 
         {/* Right Sidebar - Calendar */}
-        <aside className="w-[280px] bg-white border-l border-gray-200 p-4">
-          <div className="text-sm font-medium mb-4">June 2025</div>
+        <aside className="w-[280px] bg-white border-l border-gray-200 p-[16px]">
+          <div className="text-[14px] font-medium mb-[16px] text-gray-900">June 2025</div>
           {/* Calendar would go here */}
-          <div className="grid grid-cols-7 gap-1 text-xs text-center">
+          <div className="grid grid-cols-7 gap-[4px] text-[11px] text-center">
             {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
-              <div key={i} className="py-1 text-gray-500">{day}</div>
+              <div key={i} className="py-[4px] text-gray-500 font-medium">{day}</div>
             ))}
             {Array.from({ length: 30 }, (_, i) => (
-              <div key={i} className={`py-1 ${i === 29 ? 'bg-red-50 text-red-600 font-medium rounded' : 'text-gray-700'}`}>
+              <div key={i} className={`py-[4px] ${i === 29 ? 'bg-red-50 text-red-600 font-medium rounded' : 'text-gray-700 hover:bg-gray-50 rounded cursor-pointer'}`}>
                 {i + 1}
               </div>
             ))}
@@ -270,7 +270,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Version Info */}
-      <div className="fixed bottom-4 right-4 bg-white rounded shadow-lg p-2 text-xs text-gray-500">
+      <div className="fixed bottom-[16px] right-[16px] bg-white rounded shadow-lg p-[8px] text-[11px] text-gray-500">
         v{VERSION_INFO.version}
       </div>
     </div>
