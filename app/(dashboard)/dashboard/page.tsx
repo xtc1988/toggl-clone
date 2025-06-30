@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
 import { VERSION_INFO } from '@/utils/version'
-import Link from 'next/link'
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null)
@@ -13,7 +12,6 @@ export default function DashboardPage() {
   const [isRunning, setIsRunning] = useState(false)
   const [seconds, setSeconds] = useState(0)
   const [taskName, setTaskName] = useState('')
-  const [selectedProject, setSelectedProject] = useState('')
 
   useEffect(() => {
     const checkUser = async () => {
@@ -53,192 +51,227 @@ export default function DashboardPage() {
   }, [seconds])
 
   const handleStartStop = () => {
-    if (isRunning) {
-      // Stop timer
-      setIsRunning(false)
-      // ここで時間エントリーを保存する処理を追加
-    } else {
-      // Start timer
-      if (taskName.trim()) {
-        setIsRunning(true)
-      }
-    }
+    setIsRunning(!isRunning)
   }
 
-  if (loading) return <div className="min-h-screen bg-[#2C1338] flex items-center justify-center text-white">Loading...</div>
+  if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>
 
   return (
-    <div className="min-h-screen bg-[#2C1338] text-white">
-      {/* Top Bar */}
-      <div className="bg-[#44355B] h-12 flex items-center justify-between px-4">
-        <div className="flex items-center space-x-6">
-          <Link href="/dashboard" className="text-[#E57CD8] font-semibold text-lg">
-            Toggl Track
-          </Link>
-          <nav className="flex items-center space-x-4 text-sm">
-            <a href="#" className="text-white hover:text-[#E57CD8] transition-colors">Timer</a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">Reports</a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">Insights</a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">Projects</a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">Clients</a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">Team</a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">Tags</a>
-          </nav>
-        </div>
-        
-        <div className="flex items-center space-x-4">
-          <button className="text-gray-400 hover:text-white">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"/>
-            </svg>
-          </button>
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-[#E57CD8] rounded-full flex items-center justify-center text-sm font-medium">
-              {user?.email?.[0]?.toUpperCase()}
+    <div className="min-h-screen bg-[#FAFBFC]">
+      {/* Header - 高さ50px固定 */}
+      <header className="h-[50px] bg-white border-b border-gray-200 flex items-center px-4">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center">
+            {/* Logo */}
+            <div className="font-bold text-xl mr-8">Toggl Track</div>
+            
+            {/* Navigation */}
+            <nav className="flex items-center space-x-6 text-sm">
+              <a href="#" className="text-gray-900 font-medium">Timer</a>
+              <a href="#" className="text-gray-600 hover:text-gray-900">Reports</a>
+              <a href="#" className="text-gray-600 hover:text-gray-900">Insights</a>
+              <a href="#" className="text-gray-600 hover:text-gray-900">Projects</a>
+              <a href="#" className="text-gray-600 hover:text-gray-900">Clients</a>
+              <a href="#" className="text-gray-600 hover:text-gray-900">Team</a>
+              <a href="#" className="text-gray-600 hover:text-gray-900">Tags</a>
+              <a href="#" className="text-gray-600 hover:text-gray-900">Settings</a>
+            </nav>
+          </div>
+          
+          {/* Right side */}
+          <div className="flex items-center space-x-4">
+            <button className="p-2 hover:bg-gray-100 rounded">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+            </button>
+            <button className="p-2 hover:bg-gray-100 rounded">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm">
+                {user?.email?.[0]?.toUpperCase()}
+              </div>
             </div>
-            <form action="/auth/signout" method="post">
-              <button 
-                type="submit"
-                className="text-gray-400 hover:text-white text-sm"
-              >
-                Sign out
-              </button>
-            </form>
+          </div>
+        </div>
+      </header>
+
+      {/* Timer Bar - 高さ66px固定 */}
+      <div className="h-[66px] bg-white border-b border-gray-200 px-4 flex items-center">
+        <div className="flex items-center justify-between w-full max-w-[1200px] mx-auto">
+          <div className="flex items-center flex-1">
+            {/* Task input */}
+            <input
+              type="text"
+              value={taskName}
+              onChange={(e) => setTaskName(e.target.value)}
+              placeholder="What are you working on?"
+              className="flex-1 h-[40px] px-3 text-[15px] border-0 outline-none placeholder-gray-400"
+            />
+            
+            {/* Project selector */}
+            <button className="h-[40px] px-3 flex items-center space-x-2 hover:bg-gray-50 text-gray-600">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 2a1 1 0 00-1 1v1a1 1 0 002 0V3a1 1 0 00-1-1zM4 4h3a3 3 0 006 0h3a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm2.5 7a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm2.45 4a2.5 2.5 0 10-4.9 0h4.9zM12 9a1 1 0 100 2h3a1 1 0 100-2h-3zm-1 4a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z" clipRule="evenodd" />
+              </svg>
+              <span className="text-sm">+ Project</span>
+            </button>
+
+            {/* Tag button */}
+            <button className="h-[40px] w-[40px] flex items-center justify-center hover:bg-gray-50 text-gray-400">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+              </svg>
+            </button>
+
+            {/* Billable button */}
+            <button className="h-[40px] w-[40px] flex items-center justify-center hover:bg-gray-50 text-gray-400">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Timer and controls */}
+          <div className="flex items-center space-x-4">
+            <span className="text-[24px] font-mono text-gray-800">{time}</span>
+            
+            <button
+              onClick={handleStartStop}
+              className={`h-[40px] px-6 rounded font-medium text-sm uppercase tracking-wider transition-all ${
+                isRunning 
+                  ? 'bg-red-500 hover:bg-red-600 text-white' 
+                  : 'bg-[#E01B22] hover:bg-[#C51920] text-white'
+              }`}
+            >
+              {isRunning ? 'Stop' : 'Start'}
+            </button>
+
+            <button className="h-[40px] w-[40px] flex items-center justify-center hover:bg-gray-50 text-gray-400">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </button>
+
+            <button className="h-[40px] w-[40px] flex items-center justify-center hover:bg-gray-50 text-gray-400">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Timer Bar */}
-      <div className="bg-[#FFF3ED] text-gray-900 px-6 py-3">
-        <div className="max-w-7xl mx-auto flex items-center space-x-4">
-          <input
-            type="text"
-            value={taskName}
-            onChange={(e) => setTaskName(e.target.value)}
-            placeholder="What are you working on?"
-            className="flex-1 bg-transparent border-none outline-none text-lg placeholder-gray-500"
-          />
-          
-          <button className="text-gray-500 hover:text-gray-700">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </button>
-          
-          <button className="text-gray-500 hover:text-gray-700">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-            </svg>
-          </button>
-          
-          <button className="text-gray-500 hover:text-gray-700">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-          </button>
-          
-          <span className="text-2xl font-mono font-bold">{time}</span>
-          
-          <button
-            onClick={handleStartStop}
-            className={`px-8 py-2 rounded-full font-medium transition-all ${
-              isRunning 
-                ? 'bg-red-500 hover:bg-red-600 text-white' 
-                : 'bg-[#E57CD8] hover:bg-[#d66cc7] text-white'
-            }`}
-          >
-            {isRunning ? 'STOP' : 'START'}
-          </button>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex">
-        {/* Sidebar */}
-        <div className="w-64 bg-[#412A4C] min-h-screen p-4">
+      {/* Main Content Area */}
+      <div className="flex" style={{ height: 'calc(100vh - 116px)' }}>
+        {/* Left Sidebar - 幅 220px 固定 */}
+        <aside className="w-[220px] bg-[#F6F8FA] border-r border-gray-200 p-4">
           <div className="space-y-6">
             <div>
-              <h3 className="text-xs uppercase text-gray-400 mb-3">Analyze</h3>
-              <div className="space-y-1">
-                <a href="#" className="block px-3 py-2 rounded hover:bg-[#564260] transition-colors">Reports</a>
-                <a href="#" className="block px-3 py-2 rounded hover:bg-[#564260] transition-colors">Insights</a>
-              </div>
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Analyze</h3>
+              <nav className="space-y-1">
+                <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded">Reports</a>
+                <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded">Insights</a>
+              </nav>
             </div>
             
             <div>
-              <h3 className="text-xs uppercase text-gray-400 mb-3">Manage</h3>
-              <div className="space-y-1">
-                <a href="#" className="block px-3 py-2 rounded hover:bg-[#564260] transition-colors">Projects</a>
-                <a href="#" className="block px-3 py-2 rounded hover:bg-[#564260] transition-colors">Clients</a>
-                <a href="#" className="block px-3 py-2 rounded hover:bg-[#564260] transition-colors">Team</a>
-                <a href="#" className="block px-3 py-2 rounded hover:bg-[#564260] transition-colors">Tags</a>
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Manage</h3>
+              <nav className="space-y-1">
+                <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded">Projects</a>
+                <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded">Clients</a>
+                <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded">Team</a>
+                <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded">Tags</a>
+                <a href="#" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded">Help</a>
+              </nav>
+            </div>
+
+            <div>
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Workspace</h3>
+              <div className="px-3 py-2 text-sm text-gray-700">
+                {user?.email}
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Time Entries */}
-        <div className="flex-1 p-6">
-          <div className="max-w-5xl mx-auto">
+          {/* Sign out at bottom */}
+          <form action="/auth/signout" method="post" className="absolute bottom-4 left-4 right-4">
+            <button 
+              type="submit"
+              className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded"
+            >
+              Sign out
+            </button>
+          </form>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 overflow-y-auto">
+          <div className="p-6">
             {/* Date Navigation */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-4">
-                <button className="p-2 hover:bg-[#412A4C] rounded transition-colors">
+                <button className="p-1 hover:bg-gray-200 rounded">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
-                <h2 className="text-xl">Today</h2>
-                <button className="p-2 hover:bg-[#412A4C] rounded transition-colors">
+                <h2 className="text-lg font-medium">Today</h2>
+                <span className="text-sm text-gray-500">Sun, 30 Jun</span>
+                <button className="p-1 hover:bg-gray-200 rounded">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </button>
               </div>
               
-              <div className="text-right">
-                <div className="text-sm text-gray-400">Total</div>
-                <div className="text-2xl font-bold">00:00:00</div>
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-500">Total:</span>
+                <span className="text-lg font-medium">00:00:00</span>
               </div>
             </div>
 
-            {/* Time Entry List */}
-            <div className="space-y-1">
-              {/* Sample Entries */}
-              <div className="bg-[#412A4C] rounded-lg p-4 hover:bg-[#4A3456] transition-colors cursor-pointer">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="text-lg">Sample task entry</div>
-                    <span className="text-sm text-gray-400">No project</span>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <span className="text-gray-400 text-sm">09:00 - 10:30</span>
-                    <span className="font-mono">01:30:00</span>
-                    <button className="p-2 hover:bg-[#564260] rounded">
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/>
-                      </svg>
-                    </button>
-                  </div>
+            {/* Time Entries */}
+            <div className="space-y-2">
+              {/* Empty state */}
+              <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
+                <div className="max-w-md mx-auto">
+                  <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No time entries yet</h3>
+                  <p className="text-sm text-gray-500">
+                    When you track time it will appear here.
+                  </p>
                 </div>
-              </div>
-              
-              {/* Empty State */}
-              <div className="text-center py-12 text-gray-500">
-                <p>No time entries for this day</p>
-                <p className="text-sm mt-2">Start tracking time to see your entries here</p>
               </div>
             </div>
           </div>
-        </div>
+        </main>
+
+        {/* Right Sidebar - Calendar */}
+        <aside className="w-[280px] bg-white border-l border-gray-200 p-4">
+          <div className="text-sm font-medium mb-4">June 2025</div>
+          {/* Calendar would go here */}
+          <div className="grid grid-cols-7 gap-1 text-xs text-center">
+            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
+              <div key={i} className="py-1 text-gray-500">{day}</div>
+            ))}
+            {Array.from({ length: 30 }, (_, i) => (
+              <div key={i} className={`py-1 ${i === 29 ? 'bg-red-50 text-red-600 font-medium rounded' : 'text-gray-700'}`}>
+                {i + 1}
+              </div>
+            ))}
+          </div>
+        </aside>
       </div>
 
       {/* Version Info */}
-      <div className="fixed bottom-4 right-4 bg-[#412A4C] rounded-lg shadow-lg p-3">
-        <div className="text-xs text-gray-400 space-y-1">
-          <div>v{VERSION_INFO.version}</div>
-          <div>{VERSION_INFO.lastUpdated}</div>
-        </div>
+      <div className="fixed bottom-4 right-4 bg-white rounded shadow-lg p-2 text-xs text-gray-500">
+        v{VERSION_INFO.version}
       </div>
     </div>
   )
