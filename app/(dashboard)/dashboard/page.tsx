@@ -61,189 +61,167 @@ export default function DashboardPage() {
   }
 
   if (loading) return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 flex items-center justify-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
     </div>
   )
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
-      {/* Modern Navigation */}
-      <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div className="flex items-center space-x-8">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">TimeTracker</span>
+    <div className="min-h-screen bg-gray-50">
+      {/* Compact Header - GitHub/Linear Style */}
+      <header className="bg-white border-b border-gray-200 h-14">
+        <div className="h-full px-4 flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
+                <div className="w-3 h-3 bg-white rounded-sm"></div>
               </div>
-              
-              {/* Navigation Links */}
-              <div className="hidden md:flex items-center space-x-1">
-                <a href="#" className="px-3 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg">Timer</a>
-                <a href="#" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">Analytics</a>
-                <a href="#" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">Projects</a>
-                <a href="#" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">Team</a>
-              </div>
+              <span className="font-medium text-gray-900">TimeTrack</span>
             </div>
-
-            {/* User Menu */}
-            <div className="flex items-center space-x-4">
-              <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM11 19H7a2 2 0 01-2-2V7a2 2 0 012-2h4m0 14v-5a2 2 0 012-2h2" />
-                </svg>
-              </button>
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm font-medium">{user?.email?.[0]?.toUpperCase()}</span>
-                </div>
-                <button 
-                  onClick={handleSignOut}
-                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  Sign out
-                </button>
-              </div>
+            <nav className="flex items-center gap-1">
+              <a href="#" className="px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 rounded">Timer</a>
+              <a href="#" className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 rounded">Reports</a>
+              <a href="#" className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 rounded">Projects</a>
+            </nav>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <button className="p-1.5 text-gray-500 hover:text-gray-700 rounded">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+            </button>
+            <div className="w-6 h-6 bg-gray-800 rounded-full flex items-center justify-center">
+              <span className="text-white text-xs font-medium">{user?.email?.[0]?.toUpperCase()}</span>
             </div>
+            <button 
+              onClick={handleSignOut}
+              className="text-xs text-gray-500 hover:text-gray-700"
+            >
+              Sign out
+            </button>
           </div>
         </div>
-      </nav>
+      </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* Timer Section */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200/50 p-8 mb-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
-              {/* Task Input */}
-              <div className="flex-1 w-full lg:w-auto">
-                <input
-                  type="text"
-                  value={taskName}
-                  onChange={(e) => setTaskName(e.target.value)}
-                  placeholder="What are you working on today?"
-                  className="w-full text-lg px-0 py-3 border-0 border-b border-gray-200 focus:border-indigo-500 focus:ring-0 bg-transparent placeholder-gray-400 transition-colors"
-                />
-              </div>
-              
-              {/* Timer Display & Controls */}
-              <div className="flex items-center space-x-6">
-                <div className="text-4xl font-mono font-bold text-gray-900 min-w-[180px] text-center">
-                  {time}
-                </div>
-                
+      <main className="p-6">
+        <div className="max-w-6xl mx-auto">
+          {/* Timer Section - Compact */}
+          <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+            <div className="flex items-center gap-4">
+              <input
+                type="text"
+                value={taskName}
+                onChange={(e) => setTaskName(e.target.value)}
+                placeholder="What are you working on?"
+                className="flex-1 text-sm border-0 focus:ring-0 bg-transparent placeholder-gray-400"
+              />
+              <div className="flex items-center gap-3">
+                <div className="text-lg font-mono text-gray-900 min-w-[70px]">{time}</div>
                 <button
                   onClick={handleStartStop}
-                  className={`relative px-8 py-4 rounded-xl font-semibold text-white transition-all duration-200 transform hover:scale-105 ${
+                  className={`px-4 py-2 text-xs font-medium rounded transition-colors ${
                     isRunning 
-                      ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-lg shadow-red-500/25' 
-                      : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg shadow-indigo-500/25'
+                      ? 'bg-red-600 text-white hover:bg-red-700' 
+                      : 'bg-blue-600 text-white hover:bg-blue-700'
                   }`}
                 >
-                  <div className="flex items-center space-x-2">
-                    {isRunning ? (
-                      <>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 10h6v4H9z" />
-                        </svg>
-                        <span>Stop</span>
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M15 14h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>Start</span>
-                      </>
-                    )}
+                  {isRunning ? 'Stop' : 'Start'}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Stats Grid - GitHub Style */}
+          <div className="grid grid-cols-4 gap-4 mb-6">
+            <div className="bg-white rounded-lg border border-gray-200 p-4">
+              <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Today</div>
+              <div className="text-xl font-bold text-gray-900">0h 0m</div>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 p-4">
+              <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">This Week</div>
+              <div className="text-xl font-bold text-gray-900">0h 0m</div>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 p-4">
+              <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">This Month</div>
+              <div className="text-xl font-bold text-gray-900">0h 0m</div>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 p-4">
+              <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Projects</div>
+              <div className="text-xl font-bold text-gray-900">0</div>
+            </div>
+          </div>
+
+          {/* Two Column Layout */}
+          <div className="grid grid-cols-3 gap-6">
+            {/* Time Entries */}
+            <div className="col-span-2">
+              <div className="bg-white rounded-lg border border-gray-200">
+                <div className="px-4 py-3 border-b border-gray-200">
+                  <h2 className="text-sm font-medium text-gray-900">Recent Activity</h2>
+                </div>
+                <div className="p-6">
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                      <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-sm font-medium text-gray-900 mb-1">No time entries</h3>
+                    <p className="text-xs text-gray-500">Start the timer to track your work</p>
                   </div>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Dashboard Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Today's Summary */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200/50 p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">Today's Activity</h2>
-                <div className="flex items-center space-x-2 text-sm text-gray-500">
-                  <span>Total:</span>
-                  <span className="font-semibold text-gray-900">00:00:00</span>
-                </div>
-              </div>
-              
-              {/* Empty State */}
-              <div className="text-center py-12">
-                <div className="w-16 h-16 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Ready to start tracking?</h3>
-                <p className="text-gray-500 mb-4">Your time entries will appear here once you start the timer.</p>
-                <button 
-                  onClick={handleStartStop}
-                  className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
-                >
-                  Start your first timer
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Quick Stats */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200/50 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Stats</h3>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600">This Week</span>
-                  <span className="font-semibold text-gray-900">0h 0m</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600">This Month</span>
-                  <span className="font-semibold text-gray-900">0h 0m</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Projects</span>
-                  <span className="font-semibold text-gray-900">0</span>
                 </div>
               </div>
             </div>
 
-            {/* Recent Projects */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200/50 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Projects</h3>
-              <div className="text-center py-8">
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-                  <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
+            {/* Sidebar */}
+            <div>
+              {/* Projects */}
+              <div className="bg-white rounded-lg border border-gray-200 mb-4">
+                <div className="px-4 py-3 border-b border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-medium text-gray-900">Projects</h3>
+                    <button className="text-xs text-blue-600 hover:text-blue-700">+ New</button>
+                  </div>
                 </div>
-                <p className="text-gray-500 text-sm">No projects yet</p>
+                <div className="p-4">
+                  <div className="text-center py-4">
+                    <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center mx-auto mb-2">
+                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                    </div>
+                    <p className="text-xs text-gray-500">No projects</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="bg-white rounded-lg border border-gray-200">
+                <div className="px-4 py-3 border-b border-gray-200">
+                  <h3 className="text-sm font-medium text-gray-900">Quick Actions</h3>
+                </div>
+                <div className="p-4 space-y-2">
+                  <button className="w-full text-left px-3 py-2 text-xs text-gray-700 hover:bg-gray-50 rounded">
+                    View Reports
+                  </button>
+                  <button className="w-full text-left px-3 py-2 text-xs text-gray-700 hover:bg-gray-50 rounded">
+                    Export Data
+                  </button>
+                  <button className="w-full text-left px-3 py-2 text-xs text-gray-700 hover:bg-gray-50 rounded">
+                    Settings
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </main>
 
-      {/* Version Info */}
-      <div className="fixed bottom-4 right-4 bg-white/80 backdrop-blur-sm rounded-lg shadow-lg px-3 py-2 text-xs text-gray-500">
-        <div>v{VERSION_INFO.version}</div>
-        <div className="text-[10px] text-gray-400">{VERSION_INFO.lastUpdated}</div>
-        <div className="text-[10px] text-gray-400">{VERSION_INFO.description}</div>
+      {/* Compact Version Info */}
+      <div className="fixed bottom-3 right-3 bg-white border border-gray-200 rounded px-2 py-1 text-xs text-gray-500">
+        v{VERSION_INFO.version}
       </div>
     </div>
   )
