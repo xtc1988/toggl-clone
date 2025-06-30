@@ -1,6 +1,6 @@
 // バージョン情報
 export const VERSION_INFO = {
-  version: '3.1.0',
-  lastUpdated: '2025-06-29 21:45:00 JST',
-  description: 'Togglライクな美しいダッシュボード'
+  version: '4.0.0',
+  lastUpdated: '2025-06-30 00:25:00 JST',
+  description: '本物のToggl Trackダークモード完全再現版'
 } as const

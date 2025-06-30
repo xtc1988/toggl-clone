@@ -1,234 +1,241 @@
+'use client'
+
+import { useEffect, useState } from 'react'
 import { redirect } from 'next/navigation'
-import { createClient } from '@/utils/supabase/server'
+import { createClient } from '@/utils/supabase/client'
 import { VERSION_INFO } from '@/utils/version'
+import Link from 'next/link'
 
-export default async function DashboardPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+export default function DashboardPage() {
+  const [user, setUser] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [time, setTime] = useState('00:00:00')
+  const [isRunning, setIsRunning] = useState(false)
+  const [seconds, setSeconds] = useState(0)
+  const [taskName, setTaskName] = useState('')
+  const [selectedProject, setSelectedProject] = useState('')
 
-  if (!user) {
-    redirect('/login')
+  useEffect(() => {
+    const checkUser = async () => {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (!user) {
+        redirect('/login')
+      }
+      
+      setUser(user)
+      setLoading(false)
+    }
+    
+    checkUser()
+  }, [])
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null
+
+    if (isRunning) {
+      interval = setInterval(() => {
+        setSeconds(seconds => seconds + 1)
+      }, 1000)
+    }
+
+    return () => {
+      if (interval) clearInterval(interval)
+    }
+  }, [isRunning])
+
+  useEffect(() => {
+    const hours = Math.floor(seconds / 3600)
+    const minutes = Math.floor((seconds % 3600) / 60)
+    const secs = seconds % 60
+    setTime(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`)
+  }, [seconds])
+
+  const handleStartStop = () => {
+    if (isRunning) {
+      // Stop timer
+      setIsRunning(false)
+      // ここで時間エントリーを保存する処理を追加
+    } else {
+      // Start timer
+      if (taskName.trim()) {
+        setIsRunning(true)
+      }
+    }
   }
 
+  if (loading) return <div className="min-h-screen bg-[#2C1338] flex items-center justify-center text-white">Loading...</div>
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">T</span>
-              </div>
-              <span className="text-xl font-semibold text-gray-900">Toggl Track</span>
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                <span className="text-purple-600 font-medium">
-                  {user.email?.[0]?.toUpperCase()}
-                </span>
-              </div>
-              <span>{user.email}</span>
+    <div className="min-h-screen bg-[#2C1338] text-white">
+      {/* Top Bar */}
+      <div className="bg-[#44355B] h-12 flex items-center justify-between px-4">
+        <div className="flex items-center space-x-6">
+          <Link href="/dashboard" className="text-[#E57CD8] font-semibold text-lg">
+            Toggl Track
+          </Link>
+          <nav className="flex items-center space-x-4 text-sm">
+            <a href="#" className="text-white hover:text-[#E57CD8] transition-colors">Timer</a>
+            <a href="#" className="text-gray-400 hover:text-white transition-colors">Reports</a>
+            <a href="#" className="text-gray-400 hover:text-white transition-colors">Insights</a>
+            <a href="#" className="text-gray-400 hover:text-white transition-colors">Projects</a>
+            <a href="#" className="text-gray-400 hover:text-white transition-colors">Clients</a>
+            <a href="#" className="text-gray-400 hover:text-white transition-colors">Team</a>
+            <a href="#" className="text-gray-400 hover:text-white transition-colors">Tags</a>
+          </nav>
+        </div>
+        
+        <div className="flex items-center space-x-4">
+          <button className="text-gray-400 hover:text-white">
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"/>
+            </svg>
+          </button>
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-[#E57CD8] rounded-full flex items-center justify-center text-sm font-medium">
+              {user?.email?.[0]?.toUpperCase()}
             </div>
             <form action="/auth/signout" method="post">
               <button 
                 type="submit"
-                className="text-sm text-gray-500 hover:text-gray-700 px-3 py-1 rounded border border-gray-300 hover:border-gray-400 transition-colors"
+                className="text-gray-400 hover:text-white text-sm"
               >
-                ログアウト
+                Sign out
               </button>
             </form>
           </div>
         </div>
-      </header>
+      </div>
 
+      {/* Timer Bar */}
+      <div className="bg-[#FFF3ED] text-gray-900 px-6 py-3">
+        <div className="max-w-7xl mx-auto flex items-center space-x-4">
+          <input
+            type="text"
+            value={taskName}
+            onChange={(e) => setTaskName(e.target.value)}
+            placeholder="What are you working on?"
+            className="flex-1 bg-transparent border-none outline-none text-lg placeholder-gray-500"
+          />
+          
+          <button className="text-gray-500 hover:text-gray-700">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </button>
+          
+          <button className="text-gray-500 hover:text-gray-700">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+            </svg>
+          </button>
+          
+          <button className="text-gray-500 hover:text-gray-700">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </button>
+          
+          <span className="text-2xl font-mono font-bold">{time}</span>
+          
+          <button
+            onClick={handleStartStop}
+            className={`px-8 py-2 rounded-full font-medium transition-all ${
+              isRunning 
+                ? 'bg-red-500 hover:bg-red-600 text-white' 
+                : 'bg-[#E57CD8] hover:bg-[#d66cc7] text-white'
+            }`}
+          >
+            {isRunning ? 'STOP' : 'START'}
+          </button>
+        </div>
+      </div>
+
+      {/* Main Content */}
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-gray-200 min-h-screen">
-          <nav className="p-4 space-y-1">
-            <a href="#" className="flex items-center space-x-3 px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-medium">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
-              </svg>
-              <span>タイマー</span>
-            </a>
-            <a href="#" className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"/>
-              </svg>
-              <span>タイムシート</span>
-            </a>
-            <a href="#" className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"/>
-                <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"/>
-              </svg>
-              <span>レポート</span>
-            </a>
-            <a href="#" className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
-              </svg>
-              <span>プロジェクト</span>
-            </a>
-            <a href="#" className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clipRule="evenodd"/>
-              </svg>
-              <span>チーム</span>
-            </a>
-          </nav>
-        </aside>
-
-        {/* Main Content */}
-        <main className="flex-1 p-8">
-          {/* Timer Section */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-6">時間を記録</h1>
+        <div className="w-64 bg-[#412A4C] min-h-screen p-4">
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-xs uppercase text-gray-400 mb-3">Analyze</h3>
+              <div className="space-y-1">
+                <a href="#" className="block px-3 py-2 rounded hover:bg-[#564260] transition-colors">Reports</a>
+                <a href="#" className="block px-3 py-2 rounded hover:bg-[#564260] transition-colors">Insights</a>
+              </div>
+            </div>
             
-            {/* Timer Input */}
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="flex-1">
-                <input 
-                  type="text" 
-                  placeholder="何に取り組んでいますか？"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-lg"
-                />
-              </div>
-              <select className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                <option>プロジェクトを選択</option>
-                <option>ウェブサイト開発</option>
-                <option>モバイルアプリ</option>
-                <option>マーケティング</option>
-              </select>
-              <button className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 rounded-full flex items-center justify-center text-white font-bold text-xl transition-all duration-200 transform hover:scale-105 shadow-lg">
-                ▶
-              </button>
-            </div>
-
-            {/* Current Timer Display */}
-            <div className="flex items-center justify-center py-8">
-              <div className="text-center">
-                <div className="text-6xl font-mono font-bold text-gray-900 mb-2">00:00:00</div>
-                <div className="text-gray-500">停止中</div>
+            <div>
+              <h3 className="text-xs uppercase text-gray-400 mb-3">Manage</h3>
+              <div className="space-y-1">
+                <a href="#" className="block px-3 py-2 rounded hover:bg-[#564260] transition-colors">Projects</a>
+                <a href="#" className="block px-3 py-2 rounded hover:bg-[#564260] transition-colors">Clients</a>
+                <a href="#" className="block px-3 py-2 rounded hover:bg-[#564260] transition-colors">Team</a>
+                <a href="#" className="block px-3 py-2 rounded hover:bg-[#564260] transition-colors">Tags</a>
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Recent Entries */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+        {/* Time Entries */}
+        <div className="flex-1 p-6">
+          <div className="max-w-5xl mx-auto">
+            {/* Date Navigation */}
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">最近のエントリー</h2>
-              <div className="flex space-x-2">
-                <button className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg hover:border-gray-400 transition-colors">
-                  今日
+              <div className="flex items-center space-x-4">
+                <button className="p-2 hover:bg-[#412A4C] rounded transition-colors">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
                 </button>
-                <button className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg hover:border-gray-400 transition-colors">
-                  今週
+                <h2 className="text-xl">Today</h2>
+                <button className="p-2 hover:bg-[#412A4C] rounded transition-colors">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 </button>
-                <button className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg hover:border-gray-400 transition-colors">
-                  今月
-                </button>
+              </div>
+              
+              <div className="text-right">
+                <div className="text-sm text-gray-400">Total</div>
+                <div className="text-2xl font-bold">00:00:00</div>
               </div>
             </div>
 
-            {/* Sample Entry */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-4 hover:bg-gray-50 rounded-lg transition-colors">
-                <div className="flex items-center space-x-4">
-                  <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
-                  <div>
-                    <div className="font-medium text-gray-900">ダッシュボードのデザイン改善</div>
-                    <div className="text-sm text-gray-500">ウェブサイト開発</div>
+            {/* Time Entry List */}
+            <div className="space-y-1">
+              {/* Sample Entries */}
+              <div className="bg-[#412A4C] rounded-lg p-4 hover:bg-[#4A3456] transition-colors cursor-pointer">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="text-lg">Sample task entry</div>
+                    <span className="text-sm text-gray-400">No project</span>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <span className="text-gray-400 text-sm">09:00 - 10:30</span>
+                    <span className="font-mono">01:30:00</span>
+                    <button className="p-2 hover:bg-[#564260] rounded">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/>
+                      </svg>
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center space-x-4">
-                  <div className="text-sm text-gray-500">14:30 - 16:45</div>
-                  <div className="font-mono font-medium text-gray-900">02:15:00</div>
-                  <button className="w-8 h-8 bg-purple-100 hover:bg-purple-200 rounded-full flex items-center justify-center text-purple-600 transition-colors">
-                    ▶
-                  </button>
-                </div>
               </div>
-
-              <div className="flex items-center justify-between p-4 hover:bg-gray-50 rounded-lg transition-colors">
-                <div className="flex items-center space-x-4">
-                  <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-                  <div>
-                    <div className="font-medium text-gray-900">ミーティング準備</div>
-                    <div className="text-sm text-gray-500">マーケティング</div>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <div className="text-sm text-gray-500">09:00 - 10:30</div>
-                  <div className="font-mono font-medium text-gray-900">01:30:00</div>
-                  <button className="w-8 h-8 bg-purple-100 hover:bg-purple-200 rounded-full flex items-center justify-center text-purple-600 transition-colors">
-                    ▶
-                  </button>
-                </div>
-              </div>
-
-              <div className="text-center py-8 text-gray-500">
-                <p>今日はまだエントリーがありません</p>
-                <p className="text-sm mt-1">上のタイマーで時間の記録を開始しましょう</p>
+              
+              {/* Empty State */}
+              <div className="text-center py-12 text-gray-500">
+                <p>No time entries for this day</p>
+                <p className="text-sm mt-2">Start tracking time to see your entries here</p>
               </div>
             </div>
           </div>
-
-          {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <svg className="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"/>
-                  </svg>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">0:00</div>
-                  <div className="text-sm text-gray-500">今日の作業時間</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"/>
-                  </svg>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">0:00</div>
-                  <div className="text-sm text-gray-500">今週の作業時間</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"/>
-                    <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"/>
-                  </svg>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">0:00</div>
-                  <div className="text-sm text-gray-500">今月の作業時間</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </main>
+        </div>
       </div>
 
       {/* Version Info */}
-      <div className="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg border border-gray-200 p-3">
-        <div className="text-xs text-gray-500 space-y-1">
+      <div className="fixed bottom-4 right-4 bg-[#412A4C] rounded-lg shadow-lg p-3">
+        <div className="text-xs text-gray-400 space-y-1">
           <div>v{VERSION_INFO.version}</div>
           <div>{VERSION_INFO.lastUpdated}</div>
         </div>
