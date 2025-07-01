@@ -81,34 +81,34 @@ export default function TimeEntryList() {
   const filteredEntries = timeEntries.filter(entry => entry.date === selectedDate)
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+    <div className="max-w-md mx-auto bg-white rounded-lg shadow border border-gray-200">
       {/* ヘッダー */}
-      <div className="bg-gradient-to-r from-gray-50 to-white p-6 border-b border-gray-100">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center">
-            <Clock className="h-6 w-6 mr-3 text-emerald-600" />
-            Time Entries
+      <div className="p-4 border-b border-gray-200">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold text-gray-900 flex items-center">
+            <Clock className="h-5 w-5 mr-2 text-emerald-600" />
+            記録一覧
           </h2>
-          <button className="flex items-center space-x-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl">
+          <button className="flex items-center space-x-1 px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-sm rounded-md">
             <Plus className="h-4 w-4" />
-            <span>Add Entry</span>
+            <span>追加</span>
           </button>
         </div>
 
         {/* 日付選択と合計時間 */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <Calendar className="h-5 w-5 text-gray-500" />
+          <div className="flex items-center space-x-2">
+            <Calendar className="h-4 w-4 text-gray-500" />
             <input
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="px-4 py-2 border border-gray-200 rounded-xl bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
+              className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500"
             />
           </div>
           <div className="text-right">
-            <div className="text-sm text-gray-500">Total Time</div>
-            <div className="text-2xl font-bold font-mono text-gray-900">
+            <div className="text-xs text-gray-500">合計時間</div>
+            <div className="text-lg font-bold font-mono text-gray-900">
               {formatTime(getTotalDuration())}
             </div>
           </div>
@@ -116,73 +116,73 @@ export default function TimeEntryList() {
       </div>
 
       {/* エントリーリスト */}
-      <div className="p-6">
+      <div className="p-4">
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-2 border-emerald-600 border-t-transparent"></div>
+          <div className="flex items-center justify-center py-8">
+            <div className="animate-spin rounded-full h-6 w-6 border-2 border-emerald-600 border-t-transparent"></div>
           </div>
         ) : filteredEntries.length === 0 ? (
-          <div className="text-center py-12">
-            <Clock className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <div className="text-xl font-medium text-gray-500 mb-2">No entries for this date</div>
-            <div className="text-gray-400">Start tracking time to see entries here</div>
+          <div className="text-center py-8">
+            <Clock className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+            <div className="text-sm font-medium text-gray-500 mb-1">記録がありません</div>
+            <div className="text-xs text-gray-400">時間の記録を開始してください</div>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {filteredEntries.map((entry, index) => (
               <div
                 key={entry.id}
-                className="group p-5 bg-white border border-gray-100 rounded-xl hover:shadow-lg hover:border-gray-200 transition-all duration-200"
+                className="group p-3 bg-gray-50 border border-gray-200 rounded-md hover:shadow-md hover:border-gray-300"
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-3">
                     <div 
-                      className="w-6 h-6 rounded-full ring-2 ring-white shadow-sm" 
+                      className="w-4 h-4 rounded-full" 
                       style={{ backgroundColor: entry.project?.color || '#6366f1' }}
                     />
                     <div className="flex-1">
-                      <div className="font-semibold text-lg text-gray-900 mb-1">
+                      <div className="font-medium text-sm text-gray-900">
                         {entry.project?.name || 'Unknown Project'}
                       </div>
                       {entry.description && (
-                        <div className="text-gray-600 mb-2">
+                        <div className="text-xs text-gray-600 mt-1">
                           {entry.description}
                         </div>
                       )}
-                      <div className="text-sm text-gray-500">
+                      <div className="text-xs text-gray-500 mt-1">
                         {entry.startTime} - {entry.endTime}
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2">
                     <div className="text-right">
-                      <div className="text-2xl font-bold font-mono text-gray-900">
+                      <div className="text-lg font-bold font-mono text-gray-900">
                         {formatTime(entry.duration)}
                       </div>
                     </div>
                     
-                    <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <div className="flex space-x-1 opacity-0 group-hover:opacity-100">
                       <button
                         onClick={() => handleStartTimer(entry.project.id, entry.description)}
-                        className="p-3 text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all duration-200 hover:scale-110"
+                        className="p-1 text-emerald-600 hover:bg-emerald-50 rounded"
                         title="Continue"
                       >
-                        <Play className="h-5 w-5" />
+                        <Play className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => handleEditEntry(entry)}
-                        className="p-3 text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200 hover:scale-110"
+                        className="p-1 text-blue-600 hover:bg-blue-50 rounded"
                         title="Edit"
                       >
-                        <Edit className="h-5 w-5" />
+                        <Edit className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => handleDeleteEntry(entry.id)}
-                        className="p-3 text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200 hover:scale-110"
+                        className="p-1 text-red-600 hover:bg-red-50 rounded"
                         title="Delete"
                       >
-                        <Trash2 className="h-5 w-5" />
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   </div>
