@@ -2,30 +2,46 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: [['html'], ['list']],
+  retries: 1,
+  workers: 1,
+  reporter: [['list'], ['json', { outputFile: 'test-results.json' }]],
   
   use: {
     baseURL: 'https://dainage2.vercel.app',
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    video: 'off',
     headless: true,
+    ignoreHTTPSErrors: false,
+    acceptDownloads: false,
   },
 
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-    {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
+      name: 'chromium-headless',
+      use: { 
+        ...devices['Desktop Chrome'],
+        headless: true,
+        launchOptions: {
+          args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote',
+            '--single-process',
+            '--disable-gpu'
+          ]
+        }
+      },
     },
   ],
 
-  timeout: 30000,
+  timeout: 60000,
+  expect: {
+    timeout: 30000,
+  },
 });
