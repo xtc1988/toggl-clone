@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Clock, Edit, Trash2, Play, Calendar } from 'lucide-react'
+import { Clock, Edit, Trash2, Play, Calendar, Plus } from 'lucide-react'
 
 interface Project {
   id: string
@@ -23,7 +23,7 @@ export default function TimeEntryList() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
   const [loading] = useState(false)
 
-  // モックデータ
+  // モックデータ - 色をTimerCardと統一
   const [timeEntries] = useState<TimeEntry[]>([
     {
       id: '1',
@@ -32,7 +32,7 @@ export default function TimeEntryList() {
       date: new Date().toISOString().split('T')[0],
       startTime: '09:00',
       endTime: '10:00',
-      project: { id: '1', name: 'Website Development', color: '#3b82f6' }
+      project: { id: '1', name: 'Website Development', color: '#059669' }
     },
     {
       id: '2',
@@ -41,7 +41,7 @@ export default function TimeEntryList() {
       date: new Date().toISOString().split('T')[0],
       startTime: '14:00',
       endTime: '14:30',
-      project: { id: '4', name: 'Team Meeting', color: '#ef4444' }
+      project: { id: '4', name: 'Team Meeting', color: '#7c3aed' }
     },
     {
       id: '3',
@@ -50,7 +50,7 @@ export default function TimeEntryList() {
       date: new Date().toISOString().split('T')[0],
       startTime: '16:00',
       endTime: '16:45',
-      project: { id: '3', name: 'Design Work', color: '#f59e0b' }
+      project: { id: '3', name: 'Design Work', color: '#d97706' }
     }
   ])
 
@@ -58,10 +58,6 @@ export default function TimeEntryList() {
     const hours = Math.floor(seconds / 3600)
     const minutes = Math.floor((seconds % 3600) / 60)
     return `${hours}:${minutes.toString().padStart(2, '0')}`
-  }
-
-  const formatDateTime = (time: string): string => {
-    return time
   }
 
   const getTotalDuration = () => {
@@ -85,31 +81,36 @@ export default function TimeEntryList() {
   const filteredEntries = timeEntries.filter(entry => entry.date === selectedDate)
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
       {/* ヘッダー */}
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
-            <Clock className="h-5 w-5 mr-2" />
-            時間エントリー
+      <div className="bg-gradient-to-r from-gray-50 to-white p-6 border-b border-gray-100">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+            <Clock className="h-6 w-6 mr-3 text-emerald-600" />
+            Time Entries
           </h2>
-          <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
-            手動追加
+          <button className="flex items-center space-x-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl">
+            <Plus className="h-4 w-4" />
+            <span>Add Entry</span>
           </button>
         </div>
 
-        <div className="mt-4 flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <Calendar className="h-4 w-4 text-gray-400" />
+        {/* 日付選択と合計時間 */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <Calendar className="h-5 w-5 text-gray-500" />
             <input
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              className="px-4 py-2 border border-gray-200 rounded-xl bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
             />
           </div>
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            合計: <span className="font-semibold font-mono">{formatTime(getTotalDuration())}</span>
+          <div className="text-right">
+            <div className="text-sm text-gray-500">Total Time</div>
+            <div className="text-2xl font-bold font-mono text-gray-900">
+              {formatTime(getTotalDuration())}
+            </div>
           </div>
         </div>
       </div>
@@ -117,66 +118,73 @@ export default function TimeEntryList() {
       {/* エントリーリスト */}
       <div className="p-6">
         {loading ? (
-          <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-emerald-600 border-t-transparent"></div>
           </div>
         ) : filteredEntries.length === 0 ? (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-            この日には時間エントリーがありません
+          <div className="text-center py-12">
+            <Clock className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+            <div className="text-xl font-medium text-gray-500 mb-2">No entries for this date</div>
+            <div className="text-gray-400">Start tracking time to see entries here</div>
           </div>
         ) : (
-          <div className="space-y-3">
-            {filteredEntries.map((entry) => (
+          <div className="space-y-4">
+            {filteredEntries.map((entry, index) => (
               <div
                 key={entry.id}
-                className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="group p-5 bg-white border border-gray-100 rounded-xl hover:shadow-lg hover:border-gray-200 transition-all duration-200"
               >
-                <div className="flex items-center space-x-4">
-                  <div 
-                    className="w-4 h-4 rounded-full" 
-                    style={{ backgroundColor: entry.project?.color || '#6366f1' }}
-                  />
-                  <div>
-                    <div className="font-medium text-gray-900 dark:text-white">
-                      {entry.project?.name || '不明なプロジェクト'}
-                    </div>
-                    {entry.description && (
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {entry.description}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div 
+                      className="w-6 h-6 rounded-full ring-2 ring-white shadow-sm" 
+                      style={{ backgroundColor: entry.project?.color || '#6366f1' }}
+                    />
+                    <div className="flex-1">
+                      <div className="font-semibold text-lg text-gray-900 mb-1">
+                        {entry.project?.name || 'Unknown Project'}
                       </div>
-                    )}
-                    <div className="text-xs text-gray-500 dark:text-gray-500">
-                      {formatDateTime(entry.startTime)} - {formatDateTime(entry.endTime)}
+                      {entry.description && (
+                        <div className="text-gray-600 mb-2">
+                          {entry.description}
+                        </div>
+                      )}
+                      <div className="text-sm text-gray-500">
+                        {entry.startTime} - {entry.endTime}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="flex items-center space-x-3">
-                  <div className="font-mono font-semibold text-gray-900 dark:text-white">
-                    {formatTime(entry.duration)}
-                  </div>
-                  <div className="flex space-x-1">
-                    <button
-                      onClick={() => handleStartTimer(entry.project.id, entry.description)}
-                      className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
-                      title="続行"
-                    >
-                      <Play className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => handleEditEntry(entry)}
-                      className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
-                      title="編集"
-                    >
-                      <Edit className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteEntry(entry.id)}
-                      className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                      title="削除"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                  <div className="flex items-center space-x-4">
+                    <div className="text-right">
+                      <div className="text-2xl font-bold font-mono text-gray-900">
+                        {formatTime(entry.duration)}
+                      </div>
+                    </div>
+                    
+                    <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <button
+                        onClick={() => handleStartTimer(entry.project.id, entry.description)}
+                        className="p-3 text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all duration-200 hover:scale-110"
+                        title="Continue"
+                      >
+                        <Play className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={() => handleEditEntry(entry)}
+                        className="p-3 text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200 hover:scale-110"
+                        title="Edit"
+                      >
+                        <Edit className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteEntry(entry.id)}
+                        className="p-3 text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200 hover:scale-110"
+                        title="Delete"
+                      >
+                        <Trash2 className="h-5 w-5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

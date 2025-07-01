@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import TimerCard from './TimerCard'
 import TimeEntryList from './TimeEntryList'
-import { Clock } from 'lucide-react'
+import { Clock, LogOut, User } from 'lucide-react'
 
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null)
@@ -26,36 +26,69 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Clock className="h-6 w-6 text-blue-600 dark:text-blue-400 mr-2" />
-              <span className="text-lg font-semibold text-gray-900 dark:text-white">Time Tracker</span>
+      <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-center w-10 h-10 bg-emerald-600 rounded-xl">
+                <Clock className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">Toggl Track</h1>
+                <p className="text-xs text-gray-500">Time Management</p>
+              </div>
             </div>
             
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600 dark:text-gray-300">{user?.email}</span>
+              <div className="flex items-center space-x-3 px-3 py-2 bg-gray-50 rounded-xl">
+                <User className="h-4 w-4 text-gray-500" />
+                <span className="text-sm font-medium text-gray-700 max-w-[150px] truncate">
+                  {user?.email}
+                </span>
+              </div>
               <button 
                 onClick={handleSignOut}
-                className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                className="flex items-center space-x-2 px-4 py-2 text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-xl transition-all duration-200"
               >
-                Sign out
+                <LogOut className="h-4 w-4" />
+                <span className="text-sm font-medium">Sign out</span>
               </button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Main Content - Single Column Layout */}
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        <div className="space-y-6">
+      {/* Main Content */}
+      <main className="max-w-6xl mx-auto px-6 lg:px-8 py-8">
+        <div className="space-y-8">
+          {/* Welcome Section */}
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Track your time, boost your productivity
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Start timing your work and see where your time goes. Make every minute count.
+            </p>
+          </div>
+
+          {/* Timer Section */}
           <TimerCard />
+
+          {/* Time Entries Section */}
           <TimeEntryList />
         </div>
-      </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="mt-20 pb-8">
+        <div className="max-w-6xl mx-auto px-6 lg:px-8">
+          <div className="text-center text-gray-500 text-sm">
+            Built with ❤️ using Next.js, TypeScript, and Tailwind CSS
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
