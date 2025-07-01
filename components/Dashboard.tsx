@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import TimerCard from './TimerCard'
 import TimeEntryList from './TimeEntryList'
+import { VERSION_INFO } from '@/utils/version'
 import { Clock, LogOut, User } from 'lucide-react'
 
 export default function Dashboard() {
@@ -84,8 +85,21 @@ export default function Dashboard() {
       {/* Footer */}
       <footer className="mt-20 pb-8">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
-          <div className="text-center text-gray-500 text-sm">
-            Built with ❤️ using Next.js, TypeScript, and Tailwind CSS
+          <div className="text-center space-y-3">
+            <div className="flex items-center justify-center space-x-6 text-sm">
+              <div className="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full font-medium">
+                v{VERSION_INFO.version}
+              </div>
+              <div className="text-gray-500">
+                {VERSION_INFO.lastUpdated}
+              </div>
+            </div>
+            <div className="text-gray-600 text-sm max-w-2xl mx-auto">
+              {VERSION_INFO.description}
+            </div>
+            <div className="text-gray-500 text-xs">
+              Built with ❤️ using Next.js, TypeScript, and Tailwind CSS
+            </div>
           </div>
         </div>
       </footer>
