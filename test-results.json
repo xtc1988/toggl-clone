@@ -58,21 +58,21 @@
   },
   "suites": [
     {
-      "title": "latest-production-test.spec.ts",
-      "file": "latest-production-test.spec.ts",
+      "title": "local-production-test.spec.ts",
+      "file": "local-production-test.spec.ts",
       "column": 0,
       "line": 0,
       "specs": [],
       "suites": [
         {
-          "title": "Latest Production Dashboard Test",
-          "file": "latest-production-test.spec.ts",
+          "title": "Local Production Test",
+          "file": "local-production-test.spec.ts",
           "line": 3,
           "column": 6,
           "specs": [
             {
-              "title": "should capture latest production dashboard",
-              "ok": false,
+              "title": "should verify local production build design",
+              "ok": true,
               "tags": [],
               "tests": [
                 {
@@ -85,115 +85,29 @@
                     {
                       "workerIndex": 0,
                       "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 12666,
-                      "error": {
-                        "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/dashboard\" until \"load\"\n============================================================",
-                        "stack": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/dashboard\" until \"load\"\n============================================================\n    at /mnt/c/claudecode/CLAUDECODE/toggl-clone/tests/latest-production-test.spec.ts:10:16",
-                        "location": {
-                          "file": "/mnt/c/claudecode/CLAUDECODE/toggl-clone/tests/latest-production-test.spec.ts",
-                          "column": 16,
-                          "line": 10
-                        },
-                        "snippet": "   8 |     \n   9 |     // ダッシュボードページに遷移されるはず\n> 10 |     await page.waitForURL('**/dashboard', { timeout: 10000 })\n     |                ^\n  11 |     \n  12 |     // スクリーンショットを撮影\n  13 |     await page.screenshot({ "
-                      },
-                      "errors": [
+                      "status": "passed",
+                      "duration": 1144,
+                      "errors": [],
+                      "stdout": [
                         {
-                          "location": {
-                            "file": "/mnt/c/claudecode/CLAUDECODE/toggl-clone/tests/latest-production-test.spec.ts",
-                            "column": 16,
-                            "line": 10
-                          },
-                          "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/dashboard\" until \"load\"\n============================================================\n\n   8 |     \n   9 |     // ダッシュボードページに遷移されるはず\n> 10 |     await page.waitForURL('**/dashboard', { timeout: 10000 })\n     |                ^\n  11 |     \n  12 |     // スクリーンショットを撮影\n  13 |     await page.screenshot({ \n    at /mnt/c/claudecode/CLAUDECODE/toggl-clone/tests/latest-production-test.spec.ts:10:16"
+                          "text": "Header background color: rgba(0, 0, 0, 0)\n"
+                        },
+                        {
+                          "text": "Gray background color: rgba(0, 0, 0, 0)\n"
                         }
                       ],
-                      "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-07-02T01:49:19.762Z",
+                      "startTime": "2025-07-02T01:56:17.806Z",
                       "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/mnt/c/claudecode/CLAUDECODE/toggl-clone/test-results/latest-production-test-Lat-0cbf4-latest-production-dashboard-chromium-headless/test-failed-1.png"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/mnt/c/claudecode/CLAUDECODE/toggl-clone/test-results/latest-production-test-Lat-0cbf4-latest-production-dashboard-chromium-headless/error-context.md"
-                        },
-                        {
-                          "name": "trace",
-                          "contentType": "application/zip",
-                          "path": "/mnt/c/claudecode/CLAUDECODE/toggl-clone/test-results/latest-production-test-Lat-0cbf4-latest-production-dashboard-chromium-headless/trace.zip"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/mnt/c/claudecode/CLAUDECODE/toggl-clone/tests/latest-production-test.spec.ts",
-                        "column": 16,
-                        "line": 10
-                      }
-                    },
-                    {
-                      "workerIndex": 1,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 13322,
-                      "error": {
-                        "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/dashboard\" until \"load\"\n============================================================",
-                        "stack": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/dashboard\" until \"load\"\n============================================================\n    at /mnt/c/claudecode/CLAUDECODE/toggl-clone/tests/latest-production-test.spec.ts:10:16",
-                        "location": {
-                          "file": "/mnt/c/claudecode/CLAUDECODE/toggl-clone/tests/latest-production-test.spec.ts",
-                          "column": 16,
-                          "line": 10
-                        },
-                        "snippet": "   8 |     \n   9 |     // ダッシュボードページに遷移されるはず\n> 10 |     await page.waitForURL('**/dashboard', { timeout: 10000 })\n     |                ^\n  11 |     \n  12 |     // スクリーンショットを撮影\n  13 |     await page.screenshot({ "
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/mnt/c/claudecode/CLAUDECODE/toggl-clone/tests/latest-production-test.spec.ts",
-                            "column": 16,
-                            "line": 10
-                          },
-                          "message": "TimeoutError: page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/dashboard\" until \"load\"\n============================================================\n\n   8 |     \n   9 |     // ダッシュボードページに遷移されるはず\n> 10 |     await page.waitForURL('**/dashboard', { timeout: 10000 })\n     |                ^\n  11 |     \n  12 |     // スクリーンショットを撮影\n  13 |     await page.screenshot({ \n    at /mnt/c/claudecode/CLAUDECODE/toggl-clone/tests/latest-production-test.spec.ts:10:16"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 1,
-                      "startTime": "2025-07-02T01:49:37.034Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/mnt/c/claudecode/CLAUDECODE/toggl-clone/test-results/latest-production-test-Lat-0cbf4-latest-production-dashboard-chromium-headless-retry1/test-failed-1.png"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/mnt/c/claudecode/CLAUDECODE/toggl-clone/test-results/latest-production-test-Lat-0cbf4-latest-production-dashboard-chromium-headless-retry1/error-context.md"
-                        },
-                        {
-                          "name": "trace",
-                          "contentType": "application/zip",
-                          "path": "/mnt/c/claudecode/CLAUDECODE/toggl-clone/test-results/latest-production-test-Lat-0cbf4-latest-production-dashboard-chromium-headless-retry1/trace.zip"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/mnt/c/claudecode/CLAUDECODE/toggl-clone/tests/latest-production-test.spec.ts",
-                        "column": 16,
-                        "line": 10
-                      }
+                      "attachments": []
                     }
                   ],
-                  "status": "unexpected"
+                  "status": "expected"
                 }
               ],
-              "id": "1885b8f1ffb2de626e28-a69b6b8e49a4cb9d233f",
-              "file": "latest-production-test.spec.ts",
+              "id": "f23c8fd90da0fa50a3dd-852f8a64d49cb7383c21",
+              "file": "local-production-test.spec.ts",
               "line": 4,
               "column": 7
             }
@@ -204,11 +118,11 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-07-02T01:49:16.348Z",
-    "duration": 33600.728,
-    "expected": 0,
+    "startTime": "2025-07-02T01:56:14.094Z",
+    "duration": 5015.562999999999,
+    "expected": 1,
     "skipped": 0,
-    "unexpected": 1,
+    "unexpected": 0,
     "flaky": 0
   }
 }
